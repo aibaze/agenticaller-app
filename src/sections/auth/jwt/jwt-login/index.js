@@ -169,34 +169,8 @@ export default function JwtLoginView() {
         <FormProvider methods={methods} onSubmit={onSubmit}>
           <Stack spacing={2.5}>
             {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-            <RHFTextField name="email" label="Email address" />
-            <RHFTextField
-              name="password"
-              label="Password"
-              type={password.value ? 'text' : 'password'}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={password.onToggle} edge="end">
-                      <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            {/*  <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: 'flex-end' }}>
-              Forgot password?
-            </Link> */}
-            <LoadingButton
-              fullWidth
-              color="primary"
-              size="large"
-              type="submit"
-              variant="contained"
-              loading={isLoading}
-            >
-              {isLoading ? 'Loading' : 'Login'}
-            </LoadingButton>
+      
+         
           </Stack>
         </FormProvider>
       </StyledStack>

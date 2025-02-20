@@ -68,7 +68,7 @@ export function useNavData() {
         {
           title: 'User/Agency',
           icon: ICONS.user,
-          path: paths.profile.root,
+          path: paths.user.settings,
           
         },
         { title: 'My Clients', path: paths.profile.clients, icon: ICONS.clients },

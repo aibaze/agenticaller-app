@@ -38,4 +38,4 @@ export const MAPBOX_API = process.env.NEXT_PUBLIC_MAPBOX_API;
 export const PATH_AFTER_SIGNUP = paths.auth.jwt.verify;
 export const PATH_AFTER_SSO_SIGNUP = paths.onboarding.root;
 export const PATH_AFTER_VERIFY = paths.onboarding.root;
-export const PATH_AFTER_SIGNIN = paths.profile.root;
+export const PATH_AFTER_SIGNIN = paths.user.settings;

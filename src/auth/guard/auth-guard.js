@@ -56,7 +56,7 @@ function Container({ children }) {
             false,
             true
           );
-          
+          console.log('user', user);
           login({ ...user });
           return setChecked(true);
         }

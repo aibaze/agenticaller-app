@@ -35,6 +35,9 @@ export const paths = {
     root: ROOTS.ONBOARDING,
     coach: `${ROOTS.ONBOARDING}/coach`,
   },
+  user:{
+    settings: "/user-settings"
+  },
   profile: {
     root: ROOTS.PROFILE,
     settings: `${ROOTS.PROFILE}/?config=true`,

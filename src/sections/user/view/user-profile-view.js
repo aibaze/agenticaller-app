@@ -155,7 +155,7 @@ const getTabs = (requiredActions) => [
 export default function UserProfileView({ isPublic }) {
   const router = useRouter();
   const settings = useSettingsContext();
-  const { currentCoach, authenticated, isPublicUser } = useAuthContext();
+  const { currentCoach, authenticated } = useAuthContext();
   const [openServiceForm, setOpenServiceForm] = useState(false);
   const [services, setServices] = useState([]);
   const [actionRequiredModalData, setActionRequiredModalData] = useState({
@@ -406,42 +406,11 @@ export default function UserProfileView({ isPublic }) {
             ]}
           />
 
-          <Stack spacing={1} alignItems="flex-start">
-            <Button
-              className="public-view-icon-button"
-              onClick={() => {
-                const sendParam = window.location.search.includes('calendar');
-                handlePublicViewClick(
-                  currentCoach?.slug,
-                  sendParam ? window.location.search : '',
-                  'profile'
-                );
-              }}
-              variant="outlined"
-              sx={{
-                borderRadius: 16,
-                backgroundColor: 'background.neutral',
-                border: '1px solid',
-                borderColor: 'grey.300',
-                color: 'text.primary',
-              }}
-              startIcon={
-                <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
-                  <VisibilityIcon fontSize="small" />
-                </Box>
-              }
-            >
-              See Public View
-            </Button>
-
-            <Typography variant="caption" color="text.secondary">
-              See how your profile looks like
-            </Typography>
-          </Stack>
+        
         </Stack>
       )}
 
-      {authenticated || isPublicUser ? (
+      {authenticated  ? (
         <>
           <Card sx={{ mb: 3, height: { xs: 296, md: 274 } }}>
             <ProfileCover
@@ -526,15 +495,11 @@ export default function UserProfileView({ isPublic }) {
             />
           )}
 
-          {currentTab === 'calendar' && <ProfileCalendar isPublic={isPublic} services={services} />}
+     {/*      {currentTab === 'calendar' && <ProfileCalendar isPublic={isPublic} services={services} />} */}
         </>
       ) : null}
 
-      <DescriptionModal
-        open={isModalOpen}
-        handleClose={handleCloseModal}
-        initialData={currentCoach}
-      />
+   
     </Container>
   );
 }
