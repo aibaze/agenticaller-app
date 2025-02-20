@@ -1,0 +1,46 @@
+'use client';
+
+import { useEffect } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import mixpanel from 'mixpanel-browser';
+import { initMixpanel } from 'src/utils/mixpanel';
+
+export default function MixpanelProvider({ children }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    initMixpanel();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (window.location.href.includes('localhost')) {
+        return;
+      }
+      // Clean the pathname
+      const fullPath = searchParams.toString()
+        ? `${pathname}?${searchParams.toString()}`
+        : pathname;
+
+      let cleanPath = fullPath;
+
+      if (pathname.startsWith('/info/')) {
+        const segments = pathname.split('/').filter(Boolean);
+
+        if (segments[2] === 'services') {
+          cleanPath = '/info/[username]/services/[serviceId]';
+        } else {
+          cleanPath = '/info/[username]';
+        }
+      }
+
+      mixpanel.track('Page View', {
+        url: window.location.href,
+        path: cleanPath,
+      });
+    }
+  }, [pathname, searchParams]);
+
+  return children;
+}

@@ -1,0 +1,23 @@
+'use client';
+
+import PropTypes from 'prop-types';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+import { AuthGuard } from 'src/auth/guard';
+import DashboardLayout from 'src/layouts/dashboard';
+
+// ----------------------------------------------------------------------
+
+export default function Layout({ children }) {
+  return (
+    <AuthGuard>
+      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+        <DashboardLayout>{children}</DashboardLayout>
+      </GoogleOAuthProvider>
+    </AuthGuard>
+  );
+}
+
+Layout.propTypes = {
+  children: PropTypes.node,
+};
