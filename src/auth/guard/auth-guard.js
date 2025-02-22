@@ -39,7 +39,6 @@ function Container({ children }) {
   const { authenticated, login } = useAuthContext();
   const [checked, setChecked] = useState(false);
 
-  console.log('authenticated', authenticated);
 
   const check = useCallback(async () => {
     if (!authenticated) {

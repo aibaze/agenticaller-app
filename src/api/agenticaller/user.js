@@ -17,3 +17,9 @@ export const getOneUser = async (identifier, token) => {
   axiosInstanceCoachApi.defaults.headers.common.x_auth_token_sso = token;
   return userResponse;
 };
+
+export const updateUser = async (userId, userData) => {
+  const url = `/users/${userId}`;
+  const response = await axiosInstanceCoachApi.put(url, userData);
+  return response;
+};

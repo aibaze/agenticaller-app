@@ -44,6 +44,7 @@ const NavItem = forwardRef(
         open={open}
         depth={depth}
         active={active}
+        style={disabled ? { pointerEvents: 'none', opacity: 0.5 } : {}}
         disabled={disabled}
         {...other}
       >

@@ -109,9 +109,8 @@ export default function ProductListView() {
     try {
       const { data } = await getVapiCalls()
      const assistants = await getVapiAssistants();
-     setAssistants(assistants.data.assistants)
-     console.log({assistants,calls:data.calls})
-      setCalls(data.calls);
+       setAssistants(assistants.data.data.assistants)
+      setCalls(data.data.calls);
     } catch (error) {
       console.error('Error fetching students:', error);
     }

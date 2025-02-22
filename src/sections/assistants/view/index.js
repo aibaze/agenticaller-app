@@ -40,7 +40,7 @@ export default function AssistantListView() {
     try {
       setLoading(true);
       const response = await getVapiAssistants();
-      setAssistants(response.data.assistants);
+      setAssistants(response.data.data.assistants);
     } catch (error) {
       console.error('Error fetching assistants:', error);
     } finally {
@@ -91,7 +91,7 @@ export default function AssistantListView() {
                   ))
                 ) : (
                   <>
-                    {assistants.map((row) => (
+                    {assistants?.map((row) => (
                       <AssistantTableRow
                         key={row.id}
                         row={row}

@@ -51,6 +51,7 @@ export const paths = {
     messages: '/messages',
     kanban: '/kanban',
     clients: '/clients',
+    phoneNumbers: '/phone-numbers',
   },
   post: {
     root: `/post`,

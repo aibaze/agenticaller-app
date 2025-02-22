@@ -56,10 +56,10 @@ export function useNavData() {
   const data = useMemo(() => [
     // OVERVIEW
     // ----------------------------------------------------------------------
-    {
+ /*    {
       subheader: 'OVERVIEW',
-      items: [{ title: 'Admin & Analytics', path: paths.profile.overview, icon: ICONS.analytics }],
-    },
+      items: [{ title: 'Admin & Analytics', path: paths.profile.overview, disabled:true,icon: ICONS.analytics }],
+    }, */
     // MANAGEMENT
     // ----------------------------------------------------------------------
     {
@@ -71,7 +71,6 @@ export function useNavData() {
           path: paths.user.settings,
           
         },
-        { title: 'My Clients', path: paths.profile.clients, icon: ICONS.clients },
         {
           title: 'Calls',
           path: "/calls",
@@ -87,16 +86,19 @@ export function useNavData() {
           path: "/phone-numbers",
           icon: ICONS.user,
         },
-        {
+      /*   { title: 'My Clients', path: paths.profile.clients,disabled:true, icon: ICONS.clients }, */
+      /*   {
           title: 'Usage',
           path: "/usage",
+          disabled:true,
           icon: ICONS.user,
         },
         {
           title: 'Hire an expert',
           path: "/hire",
+          disabled:true,
           icon: ICONS.user,
-        },
+        }, */
       ],
     },
     // PREMIUM

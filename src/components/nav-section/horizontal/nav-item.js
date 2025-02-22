@@ -50,7 +50,6 @@ const NavItem = forwardRef(
             {icon}
           </Box>
         )}
-
         {title && (
           <Box component="span" className="label">
             {title}
