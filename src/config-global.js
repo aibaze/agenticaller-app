@@ -3,7 +3,7 @@ import { paths } from 'src/routes/paths';
 // API
 // ----------------------------------------------------------------------
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
-export const COACH_API = process.env.NEXT_PUBLIC_COACH_API;
+export const COACH_API = process.env.NEXT_PUBLIC_AGENTICALLER_API;
 export const IMAGE_API_KEY = process.env.NEXT_PUBLIC_IMG_HOST_API_KEY;
 export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;
 export const IMAGE_API_URL = process.env.NEXT_PUBLIC_IMG_HOST_API_URL;

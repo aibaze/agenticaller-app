@@ -1,10 +1,8 @@
 // ----------------------------------------------------------------------
 import { paramCase } from 'src/utils/change-case';
-import { _id, _postTitles } from 'src/_mock/assets';
 
 // ----------------------------------------------------------------------
 
-const MOCK_TITLE = _postTitles[2];
 const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
@@ -52,13 +50,6 @@ export const paths = {
     kanban: '/kanban',
     clients: '/clients',
     phoneNumbers: '/phone-numbers',
-  },
-  post: {
-    root: `/post`,
-    details: (title) => `/post/${paramCase(title)}`,
-    demo: {
-      details: `/post/${paramCase(MOCK_TITLE)}`,
-    },
   },
   // DASHBOARD
   dashboard: {
