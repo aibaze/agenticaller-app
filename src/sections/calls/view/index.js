@@ -9,6 +9,7 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
+import CircularProgress from '@mui/material/CircularProgress';
 import { paths } from 'src/routes/paths';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useGetProducts } from 'src/api/product';
@@ -85,7 +86,8 @@ export default function ProductListView() {
   const settings = useSettingsContext();
   const [tableData, setTableData] = useState([]);
   const [calls, setCalls] = useState([]);
-  const [assistants, setAssistants  ] = useState([]);
+  const [assistants, setAssistants] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [rowData, setRowData] = useState({});
   const [options, setOptions] = useState([]);
@@ -107,12 +109,15 @@ export default function ProductListView() {
   // Move getCalls to a higher scope so it can be called when needed
   const getCalls = useCallback(async () => {
     try {
+      setLoading(true);
       const { data } = await getVapiCalls()
-     const assistants = await getVapiAssistants();
-       setAssistants(assistants.data.data.assistants)
+      const assistants = await getVapiAssistants();
+      setAssistants(assistants.data.data.assistants)
       setCalls(data.data.calls);
     } catch (error) {
       console.error('Error fetching students:', error);
+    } finally {
+      setLoading(false);
     }
   }, [currentCoach?._id, searchTerm]);
 
@@ -171,74 +176,80 @@ export default function ProductListView() {
         />
         
         <Card sx={{ mt: 2 }}>
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-            <TableSelectedAction
-              dense={table.dense}
-              numSelected={table.selected.length}
-              rowCount={tableData.length}
-              onSelectAllRows={(checked) =>
-                table.onSelectAllRows(
-                  checked,
-                  tableData.map((row) => row.id)
-                )
-              }
-              action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
-                  </IconButton>
-                </Tooltip>
-              }
-            />
-            <Scrollbar>
-              <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
-                <TableHeadCustom
-                  order={table.order}
-                  orderBy={table.orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
-                  numSelected={table.selected.length}
-                  onSort={table.onSort}
-                  onSelectAllRows={(checked) =>
-                    table.onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
-                    )
-                  }
-                />
-                <TableBody>
-                  {productsLoading ? (
-                    [...Array(table.rowsPerPage)].map((_, index) => (
-                      <TableSkeleton key={index} sx={{ height: denseHeight }} />
-                    ))
-                  ) : (
-                    <>
-                      {filteredCalls.map((row) => (
-                        <CallTableRow
-                          key={row._id}
-                          row={row}
-                          getCalls={getCalls}
-                          assistants={assistants}
-                          selected={table.selected.includes(row._id)}
-                          onSelectRow={() => table.onSelectRow(row._id)}
-                          onDeleteRow={() => handleDeleteRow(row._id)}
-                          onEditRow={() => handleEditRow(row)}
-                        />
-                      ))}
-                    </>
-                  )}
-                  <TableEmptyRows
-                    height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+              <TableSelectedAction
+                dense={table.dense}
+                numSelected={table.selected.length}
+                rowCount={tableData.length}
+                onSelectAllRows={(checked) =>
+                  table.onSelectAllRows(
+                    checked,
+                    tableData.map((row) => row.id)
+                  )
+                }
+                action={
+                  <Tooltip title="Delete">
+                    <IconButton color="primary" onClick={confirm.onTrue}>
+                      <Iconify icon="solar:trash-bin-trash-bold" />
+                    </IconButton>
+                  </Tooltip>
+                }
+              />
+              <Scrollbar>
+                <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+                  <TableHeadCustom
+                    order={table.order}
+                    orderBy={table.orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={tableData.length}
+                    numSelected={table.selected.length}
+                    onSort={table.onSort}
+                    onSelectAllRows={(checked) =>
+                      table.onSelectAllRows(
+                        checked,
+                        tableData.map((row) => row.id)
+                      )
+                    }
                   />
-                  <TableNoData
-                    notFound={filteredCalls.length === 0}
-                    noContentText={'Add your clients and manage every detail'}
-                  ></TableNoData>
-                </TableBody>
-              </Table>
-            </Scrollbar>
-          </TableContainer>
+                  <TableBody>
+                    {productsLoading ? (
+                      [...Array(table.rowsPerPage)].map((_, index) => (
+                        <TableSkeleton key={index} sx={{ height: denseHeight }} />
+                      ))
+                    ) : (
+                      <>
+                        {filteredCalls.map((row) => (
+                          <CallTableRow
+                            key={row._id}
+                            row={row}
+                            getCalls={getCalls}
+                            assistants={assistants}
+                            selected={table.selected.includes(row._id)}
+                            onSelectRow={() => table.onSelectRow(row._id)}
+                            onDeleteRow={() => handleDeleteRow(row._id)}
+                            onEditRow={() => handleEditRow(row)}
+                          />
+                        ))}
+                      </>
+                    )}
+                    <TableEmptyRows
+                      height={denseHeight}
+                      emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                    />
+                    <TableNoData
+                      notFound={filteredCalls.length === 0}
+                      noContentText={'Add your clients and manage every detail'}
+                    ></TableNoData>
+                  </TableBody>
+                </Table>
+              </Scrollbar>
+            </TableContainer>
+          )}
         </Card>
         {smDown && (
           <Box

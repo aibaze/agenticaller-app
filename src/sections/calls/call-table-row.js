@@ -18,7 +18,7 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { PlanPremiumIcon, EmailInboxIcon } from 'src/assets/icons';
-import { Button } from '@mui/material';
+import { Button, Modal } from '@mui/material';
 import { useSnackbar } from 'src/components/snackbar';
 import { updateStudentPaymentStatus } from 'src/api/student';
 import { sendEmail } from 'src/api/email';
@@ -120,7 +120,7 @@ export default function CallTableRow({
     endedReason,
     assistantId,
   } = row;
-
+console.log({row})
   const duration = endedAt && startedAt
     ? new Date(endedAt).getTime() - new Date(startedAt).getTime()
     : 0;
@@ -148,6 +148,8 @@ export default function CallTableRow({
   const [modalConfirmOpen, setModalConfirmOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [paymentModalOperation, setPaymentModalOperation] = useState(false);
+  const [contentModalOpen, setContentModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ type: '', content: '' });
 
   const getNextAppointment = (events, section) => {
     if (!events || events.length === 0) return { valid: false, result: 'No future appointments' };
@@ -182,6 +184,11 @@ export default function CallTableRow({
 
   const handleModalClose = () => {
     setModalConfirmOpen(false);
+  };
+
+  const handleOpenModal = (type, content) => {
+    setModalContent({ type, content });
+    setContentModalOpen(true);
   };
 
   return (
@@ -235,7 +242,7 @@ export default function CallTableRow({
             )}
             
             {summary && (
-              <IconButton onClick={() => alert(summary)}>
+              <IconButton onClick={() => handleOpenModal('summary', summary)}>
                 <Iconify icon="eva:file-text-outline" />
               </IconButton>
             )}
@@ -257,7 +264,7 @@ export default function CallTableRow({
       >
         <MenuItem
           onClick={() => {
-            onEditRow(row);
+            handleOpenModal('transcript', row.artifact.transcript || 'No transcript available');
             popover.onClose();
           }}
         >
@@ -269,7 +276,7 @@ export default function CallTableRow({
             }}
             icon="solar:pen-bold"
           />
-         Copy transcript
+         See transcript
         </MenuItem>
 
     {/*     <MenuItem
@@ -354,6 +361,57 @@ export default function CallTableRow({
           </Button>
         }
       />
+
+      <Modal
+        open={contentModalOpen}
+        onClose={() => setContentModalOpen(false)}
+        aria-labelledby="content-modal-title"
+        aria-describedby="content-modal-description"
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '80%',
+            maxWidth: 600,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            maxHeight: '80vh',
+            overflow: 'auto',
+          }}
+        >
+          <Typography id="content-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
+            {modalContent.type === 'summary' ? 'Call Summary' : 'Call Transcript'}
+          </Typography>
+          <Typography id="content-modal-description" sx={{ whiteSpace: 'pre-wrap' }}
+          style={modalConfirmOpen.type === "transcript" ? {
+            lineHeight:"50px !important",
+          }:{ }}
+          >
+            {modalContent.content}
+          </Typography>
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Button 
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(modalContent.content);
+                  enqueueSnackbar('Content copied to clipboard!', { variant: 'success' });
+                } catch (error) {
+                  enqueueSnackbar('Failed to copy content', { variant: 'error' });
+                }
+              }}
+              startIcon={<Iconify icon="eva:copy-outline" />}
+            >
+              Copy
+            </Button>
+            <Button onClick={() => setContentModalOpen(false)}>Close</Button>
+          </Box>
+        </Box>
+      </Modal>
     </>
   );
 }

@@ -6,6 +6,7 @@ import Table from '@mui/material/Table';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
+import CircularProgress from '@mui/material/CircularProgress';
 import { paths } from 'src/routes/paths';
 import { getVapiAssistants } from 'src/api/vapi';
 import Scrollbar from 'src/components/scrollbar';
@@ -19,6 +20,7 @@ import {
   TableHeadCustom,
 } from 'src/components/table';
 import AssistantTableRow from '../assistant-table-row';
+import { Box } from '@mui/material';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name' },
@@ -76,43 +78,35 @@ export default function AssistantListView() {
 
       <Card>
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-          <Scrollbar>
-            <Table size={table.dense ? 'small' : 'medium'}>
-              <TableHeadCustom
-                order={table.order}
-                orderBy={table.orderBy}
-                headLabel={TABLE_HEAD}
-                onSort={table.onSort}
-              />
-              <TableBody>
-                {loading ? (
-                  [...Array(table.rowsPerPage)].map((_, index) => (
-                    <TableSkeleton key={index} />
-                  ))
-                ) : (
-                  <>
-                    {assistants?.map((row) => (
-                      <AssistantTableRow
-                        key={row.id}
-                        row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={handleDeleteRow}
-                        onEditRow={handleEditRow}
-                      />
-                    ))}
-                   {/*  
-                    <TableEmptyRows
-                      height={72}
-                      emptyRows={table?.emptyRows(assistants.length)}
-                    /> */}
-
-                    <TableNoData notFound={!assistants.length && !loading} />
-                  </>
-                )}
-              </TableBody>
-            </Table>
-          </Scrollbar>
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Scrollbar>
+              <Table size={table.dense ? 'small' : 'medium'}>
+                <TableHeadCustom
+                  order={table.order}
+                  orderBy={table.orderBy}
+                  headLabel={TABLE_HEAD}
+                  onSort={table.onSort}
+                />
+                <TableBody>
+                  {assistants?.map((row) => (
+                    <AssistantTableRow
+                      key={row.id}
+                      row={row}
+                      selected={table.selected.includes(row.id)}
+                      onSelectRow={() => table.onSelectRow(row.id)}
+                      onDeleteRow={handleDeleteRow}
+                      onEditRow={handleEditRow}
+                    />
+                  ))}
+                  <TableNoData notFound={!assistants.length && !loading} />
+                </TableBody>
+              </Table>
+            </Scrollbar>
+          )}
         </TableContainer>
       </Card>
     </Container>

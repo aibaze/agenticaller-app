@@ -8,6 +8,7 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
+import CircularProgress from '@mui/material/CircularProgress';
 import { paths } from 'src/routes/paths';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { getVapiPhoneNumbers, getVapiAssistants } from 'src/api/vapi';
@@ -70,17 +71,21 @@ export default function PhoneNumberListView() {
   const settings = useSettingsContext();
   const [phoneNumbers, setPhoneNumbers] = useState([]);
   const [assistants, setAssistants] = useState([]);
+  const [loading, setLoading] = useState(true);
   const smDown = useResponsive('down', 'sm');
   const confirm = useBoolean();
 
   const getPhoneNumbers = useCallback(async () => {
     try {
+      setLoading(true);
       const { data } = await getVapiPhoneNumbers();
       const assistantsResponse = await getVapiAssistants();
       setAssistants(assistantsResponse.data.data.assistants);
       setPhoneNumbers(data.data.phoneNumbers);
     } catch (error) {
       console.error('Error fetching phone numbers:', error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -104,36 +109,42 @@ export default function PhoneNumberListView() {
 
       <Card>
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-          <Scrollbar>
-            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
-              <TableHeadCustom
-                order={table.order}
-                orderBy={table.orderBy}
-                headLabel={TABLE_HEAD}
-                onSort={table.onSort}
-              />
-              <TableBody>
-                {phoneNumbers.map((row) => (
-                  <PhoneNumberTableRow
-                    key={row.id}
-                    row={row}
-                    assistants={assistants}
-                    getPhoneNumbers={getPhoneNumbers}
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Scrollbar>
+              <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+                <TableHeadCustom
+                  order={table.order}
+                  orderBy={table.orderBy}
+                  headLabel={TABLE_HEAD}
+                  onSort={table.onSort}
+                />
+                <TableBody>
+                  {phoneNumbers.map((row) => (
+                    <PhoneNumberTableRow
+                      key={row.id}
+                      row={row}
+                      assistants={assistants}
+                      getPhoneNumbers={getPhoneNumbers}
+                    />
+                  ))}
+
+                  <TableEmptyRows
+                    height={denseHeight}
+                    emptyRows={emptyRows(table.page, table.rowsPerPage, phoneNumbers.length)}
                   />
-                ))}
 
-                <TableEmptyRows
-                  height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, phoneNumbers.length)}
-                />
-
-                <TableNoData
-                  notFound={phoneNumbers.length === 0}
-                  noContentText={'No phone numbers found'}
-                />
-              </TableBody>
-            </Table>
-          </Scrollbar>
+                  <TableNoData
+                    notFound={phoneNumbers.length === 0}
+                    noContentText={'No phone numbers found'}
+                  />
+                </TableBody>
+              </Table>
+            </Scrollbar>
+          )}
         </TableContainer>
       </Card>
     </Container>
