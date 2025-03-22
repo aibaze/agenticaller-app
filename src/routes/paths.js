@@ -7,7 +7,7 @@ const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
   ONBOARDING: '/onboarding',
-  PROFILE: '/profile',
+  PROFILE: '/calls',
   PRODUCT: '/product',
   SERVICE: '/services',
   INFO: '/info',

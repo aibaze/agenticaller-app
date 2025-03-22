@@ -5,6 +5,8 @@ import { useMemo, /*  useEffect, */ useReducer, useCallback } from 'react';
 
 import Cookies from 'js-cookie';
 import { logoutFromCognito } from 'src/auth/cognito/helpers';
+import { axiosInstanceCoachApi } from 'src/utils/axios';
+import { paths } from 'src/routes/paths';
 
 import { AuthContext } from './auth-context';
 import { setSession /*  isValidToken  */ } from './utils';
@@ -113,14 +115,19 @@ export function AuthProvider({ children }) {
 
   // LOGOUT
   const logout = useCallback(async () => {
-    setSession(null);
-    await logoutFromCognito();
-    Cookies.remove('x_auth_token_sso');
-    Cookies.remove('x_auth_token');
-    dispatch({
-      type: 'LOGOUT',
-    });
-    window.href = '/auth/login';
+    try {
+      setSession(null);
+      // Make a request to the backend to clear httpOnly cookies
+      await axiosInstanceCoachApi.post('/auth/google/logout');
+      dispatch({
+        type: 'LOGOUT',
+      });
+      window.location.href = paths.auth.jwt.login;
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Still redirect to login page even if there's an error
+      window.location.href = paths.auth.jwt.login;
+    }
   }, []);
 
   // ----------------------------------------------------------------------
