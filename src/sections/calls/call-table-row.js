@@ -120,7 +120,6 @@ export default function CallTableRow({
     endedReason,
     assistantId,
   } = row;
-console.log({row})
   const duration = endedAt && startedAt
     ? new Date(endedAt).getTime() - new Date(startedAt).getTime()
     : 0;
@@ -177,7 +176,6 @@ console.log({row})
       enqueueSnackbar('Deleted successfully!', { variant: 'success' });
       setModalConfirmOpen(true);
     } catch (error) {
-      console.error('Error deleting row:', error);
       enqueueSnackbar('Failed to delete', { variant: 'error' });
     }
   };

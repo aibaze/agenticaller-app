@@ -110,7 +110,9 @@ export default function ProductListView() {
   const getCalls = useCallback(async () => {
     try {
       setLoading(true);
+      console.log("getCalls")
       const { data } = await getVapiCalls()
+      console.log({data})
       const assistants = await getVapiAssistants();
       setAssistants(assistants.data.data.assistants)
       setCalls(data.data.calls);
@@ -121,9 +123,14 @@ export default function ProductListView() {
     }
   }, [currentCoach?._id, searchTerm]);
 
+
   // Call getCalls initially when currentCoach or searchTerm changes
+  
   useEffect(() => {
+    console.log("useeefect",currentCoach?._id)
+
     if (currentCoach?._id) {
+      console.log("hay id")
       getCalls();
     }
   }, [currentCoach?._id, searchTerm, getCalls]);

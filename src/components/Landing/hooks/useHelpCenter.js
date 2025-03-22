@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import { useSnackbar } from 'src/components/snackbar';
-import { bugReport } from 'src/api/bug-report';
+import { createUserFeedback } from 'src/api/agenticaller/user';
 
 // Steps:
 // 1 - Introduction text
@@ -34,7 +34,7 @@ const HelpCenterProvider = ({ children }) => {
     try {
       setIsLoading(true);
       setIsError(false);
-      await bugReport(requestBody);
+      await createUserFeedback(requestBody);
       enqueueSnackbar('Sent successfully!', { variant: 'success' });
       setStep(4);
     } catch (error) {

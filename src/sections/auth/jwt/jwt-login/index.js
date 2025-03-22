@@ -117,7 +117,7 @@ export default function JwtLoginView() {
 
 
       const currentUser = await loginUser({email:userEmail,token});
-      login(currentUser?.data);
+      login(currentUser?.data.data);
       router.push( PATH_AFTER_SIGNIN);
     } catch (error) {
       notifyError(error, {

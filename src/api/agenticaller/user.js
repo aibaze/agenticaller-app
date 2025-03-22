@@ -23,3 +23,9 @@ export const updateUser = async (userId, userData) => {
   const response = await axiosInstanceCoachApi.put(url, userData);
   return response;
 };
+
+export const createUserFeedback = async ( userData) => {
+  const url = `/users/feedback`;
+  const response = await axiosInstanceCoachApi.post(url, userData);
+  return response;
+};

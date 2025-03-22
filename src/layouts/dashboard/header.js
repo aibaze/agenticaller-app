@@ -10,7 +10,6 @@ import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import { ConfirmDialog } from 'src/components/custom-dialog';
-import { bugReport } from 'src/api/bug-report';
 import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
 
@@ -27,6 +26,7 @@ import AccountPopover from '../common/account-popover';
 import ContactsPopover from '../common/contacts-popover';
 import LanguagePopover from '../common/language-popover';
 import NotificationsPopover from '../common/notifications-popover';
+import { createUserFeedback } from 'src/api/agenticaller/user';
 
 // ----------------------------------------------------------------------
 
@@ -222,7 +222,7 @@ export default function Header({ onOpenNav }) {
                   return;
                 }
                 setFeedbackForm({ ...feedbackForm, loading: true });
-                await bugReport(feedbackForm);
+                await createUserFeedback(feedbackForm);
                 setOpenHelpModal(false);
                 setFeedbackForm({ ...feedbackForm, loading: false });
 
