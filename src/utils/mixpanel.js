@@ -3,15 +3,27 @@ import { MIXPANEL_API_KEY } from 'src/config-global';
 
 // Near entry of your product, init Mixpanel
 export const initMixpanel = () => {
+  // Guard against server-side execution
   if (typeof window === 'undefined') {
     return null;
   }
 
   try {
+    // Check if Mixpanel is already initialized
+    if (mixpanel.config) {
+      return mixpanel;
+    }
+
     mixpanel.init(MIXPANEL_API_KEY, {
       debug: process.env.NODE_ENV === 'development',
       track_pageview: true,
       persistence: 'localStorage',
+      ignore_dnt: true, // Ensures tracking works regardless of Do Not Track settings
+      api_host: 'https://api-js.mixpanel.com', // Explicitly set API host
+      batch_requests: true, // Enable request batching for better performance
+      loaded: (mixpanel) => {
+          console.log('Mixpanel initialized successfully');
+      },
     });
 
     return mixpanel;

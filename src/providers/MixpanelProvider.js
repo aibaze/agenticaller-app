@@ -10,14 +10,19 @@ export default function MixpanelProvider({ children }) {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    initMixpanel();
+    // Only initialize Mixpanel on the client side
+    if (typeof window !== 'undefined') {
+      initMixpanel();
+    }
   }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (window.location.href.includes('localhost')) {
-        return;
-      }
+    // Ensure we're on client side and Mixpanel is properly initialized
+    if (typeof window === 'undefined' || !mixpanel.config) {
+      return;
+    }
+
+    try {
       // Clean the pathname
       const fullPath = searchParams.toString()
         ? `${pathname}?${searchParams.toString()}`
@@ -39,6 +44,8 @@ export default function MixpanelProvider({ children }) {
         url: window.location.href,
         path: cleanPath,
       });
+    } catch (error) {
+      console.error('Failed to track page view:', error);
     }
   }, [pathname, searchParams]);
 
