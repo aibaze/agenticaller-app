@@ -73,10 +73,10 @@ export function AuthProvider({ children }) {
 
   // LOGIN
   const login = useCallback((coach) => {
-    setTimeout(() => {
+    if (coach) {
       identifyMixpanelUser(coach);
       identifyBugsnagUser(coach);
-    }, 4000);
+    }
 
     dispatch({
       type: 'LOGIN',
