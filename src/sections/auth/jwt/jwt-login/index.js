@@ -118,7 +118,7 @@ export default function JwtLoginView() {
 
       const currentUser = await loginUser({email:userEmail,token});
       login(currentUser?.data);
-      router.push(returnTo || PATH_AFTER_SIGNIN);
+      router.push( PATH_AFTER_SIGNIN);
     } catch (error) {
       notifyError(error, {
         context: 'google-register',
@@ -143,10 +143,7 @@ export default function JwtLoginView() {
         <Stack spacing={2} sx={{ mb: 5 }}>
           <Typography variant="h4">Sign in to Agenticaller</Typography>
           <Stack direction="row" spacing={0.5}>
-            <Typography variant="body2">New user?</Typography>
-            <Link component={RouterLink} href={paths.auth.jwt.register} variant="subtitle2">
-              Create an account
-            </Link>
+           
           </Stack>
 
           <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
@@ -195,7 +192,7 @@ export default function JwtLoginView() {
             state: 'success',
           });
           login(currentCoach?.data);
-          router.push(returnTo || PATH_AFTER_SIGNIN);
+          router.push( PATH_AFTER_SIGNIN);
           setIsLoading(false);
         };
         const errorCb = async (error) => {
