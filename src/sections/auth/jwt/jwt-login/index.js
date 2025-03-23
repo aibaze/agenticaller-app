@@ -17,6 +17,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Divider from '@mui/material/Divider';
 import Cookies from 'js-cookie';
 import { notifyError } from 'src/utils/bugsnag';
+import Box from '@mui/material/Box';
+import { alpha } from '@mui/material/styles';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
@@ -141,32 +143,86 @@ export default function JwtLoginView() {
           <Logo />
         </StyledLogoContainer>
         <Stack spacing={2} sx={{ mb: 5 }}>
-          <Typography variant="h4">Sign in to Agenticaller</Typography>
-          <Stack direction="row" spacing={0.5}>
-           
-          </Stack>
+          <Typography 
+            variant="h4" 
+            sx={{ 
+              fontWeight: 700, 
+              color: 'primary.main',
+              textAlign: 'center',
+              mb: 1,
+              textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+              letterSpacing: '0.5px'
+            }}
+          >
+            Sign in to Agenticaller
+          </Typography>
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              textAlign: 'center', 
+              color: 'text.secondary', 
+              mb: 3 
+            }}
+          >
+            Welcome back! Enter your credentials to continue
+          </Typography>
 
-          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-            <GoogleLogin
-              width={isMobile ? '250px' : '350px'}
-              onSuccess={onGoogleSuccess}
-              onError={onGoogleFailure}
-              theme="outline"
-              size="large"
-              shape="rectangular"
-              text="signin_with"
-            />
-          </GoogleOAuthProvider>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              mb: 2, 
+              '& button': { 
+                borderRadius: 2,
+                boxShadow: (theme) => `0 8px 16px ${alpha(theme.palette.primary.main, 0.24)}`,
+                transition: 'transform 0.2s ease',
+                '&:hover': {
+                  transform: 'translateY(-3px)',
+                  boxShadow: (theme) => `0 12px 20px ${alpha(theme.palette.primary.main, 0.28)}`,
+                }
+              } 
+            }}
+          >
+            <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+              <GoogleLogin
+                width={isMobile ? '250px' : '350px'}
+                onSuccess={onGoogleSuccess}
+                onError={onGoogleFailure}
+                theme="outline"
+                size="large"
+                shape="rectangular"
+                text="signin_with"
+              />
+            </GoogleOAuthProvider>
+          </Box>
 
-          <Divider>
-            <Typography variant="caption">OR</Typography>
+          <Divider sx={{ 
+            my: 3, 
+            position: 'relative',
+            '&::before, &::after': {
+              borderTopColor: (theme) => alpha(theme.palette.primary.main, 0.2),
+            }
+          }}>
+         
           </Divider>
         </Stack>
 
         <FormProvider methods={methods} onSubmit={onSubmit}>
           <Stack spacing={2.5}>
-            {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-      
+            {!!errorMsg && (
+              <Alert 
+                severity="error" 
+                sx={{ 
+                  animation: 'pulse 1.5s infinite',
+                  '@keyframes pulse': {
+                    '0%, 100%': { boxShadow: '0 0 0 rgba(211, 47, 47, 0)' },
+                    '50%': { boxShadow: '0 0 10px rgba(211, 47, 47, 0.3)' }
+                  }
+                }}
+              >
+                {errorMsg}
+              </Alert>
+            )}
          
           </Stack>
         </FormProvider>

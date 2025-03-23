@@ -53,8 +53,7 @@ export default function AuthClassicLayout({ children, image, verifyEmail, title 
             <ImageContainer>
               <Image
                 src={
-                  image ||
-                'https://i.ibb.co/DfK2f8Q/Perform.png'
+                  "https://i.ibb.co/hRsr1mns/dashboard.png"
                 }
                 alt="Login Illustration"
                 layout="fill"
