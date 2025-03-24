@@ -18,13 +18,14 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { PlanPremiumIcon, EmailInboxIcon } from 'src/assets/icons';
-import { Button, Modal } from '@mui/material';
+import { Button, Modal, Grid, Paper } from '@mui/material';
 import { useSnackbar } from 'src/components/snackbar';
 import { updateStudentPaymentStatus } from 'src/api/student';
 import { sendEmail } from 'src/api/email';
 import { useAuthContext } from 'src/auth/hooks';
 import SVGColor from 'src/components/svg-color';
 import Link from '@mui/material/Link';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as ChartTooltip, Legend } from 'recharts';
 
 const buildEmail = (client, serviceTitle, coachName) => {
   return `<html lang="en">
@@ -119,6 +120,8 @@ export default function CallTableRow({
     cost,
     endedReason,
     assistantId,
+    artifact,
+    costBreakdown,
   } = row;
   const duration = endedAt && startedAt
     ? new Date(endedAt).getTime() - new Date(startedAt).getTime()
@@ -187,6 +190,39 @@ export default function CallTableRow({
   const handleOpenModal = (type, content) => {
     setModalContent({ type, content });
     setContentModalOpen(true);
+  };
+
+  // Colors for pie chart
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
+
+  // Format numbers to display with fixed decimal places
+  const formatCost = (value) => {
+    if (typeof value !== 'number') return 'N/A';
+    return value.toFixed(4);
+  };
+
+  // Prepare data for the main cost breakdown pie chart
+  const prepareCostBreakdownData = (costBreakdown) => {
+    if (!costBreakdown) return [];
+    
+    return [
+      { name: 'STT', value: costBreakdown.stt || 0 },
+      { name: 'LLM', value: costBreakdown.llm || 0 },
+      { name: 'TTS', value: costBreakdown.tts || 0 },
+      { name: 'VAPI', value: costBreakdown.vapi || 0 }
+    ].filter(item => item.value > 0);
+  };
+
+  // Prepare data for the analysis cost breakdown pie chart
+  const prepareAnalysisCostData = (costBreakdown) => {
+    if (!costBreakdown || !costBreakdown.analysisCostBreakdown) return [];
+    
+    const analysis = costBreakdown.analysisCostBreakdown;
+    return [
+      { name: 'Summary', value: analysis.summary || 0 },
+      { name: 'Structured Data', value: analysis.structuredData || 0 },
+      { name: 'Success Evaluation', value: analysis.successEvaluation || 0 }
+    ].filter(item => item.value > 0);
   };
 
   return (
@@ -275,6 +311,23 @@ export default function CallTableRow({
             icon="solar:pen-bold"
           />
          See transcript
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => {
+            handleOpenModal('costBreakdown', row.costBreakdown || 'No cost breakdown available');
+            popover.onClose();
+          }}
+        >
+          <Iconify
+            style={{
+              width: 25,
+              height: 25,
+              color: theme.palette.primary.main,
+            }}
+            icon="solar:calculator-bold"
+          />
+          Cost Breakdown
         </MenuItem>
 
     {/*     <MenuItem
@@ -373,7 +426,7 @@ export default function CallTableRow({
             left: '50%',
             transform: 'translate(-50%, -50%)',
             width: '80%',
-            maxWidth: 600,
+            maxWidth: modalContent.type === 'costBreakdown' ? 800 : 600,
             bgcolor: 'background.paper',
             boxShadow: 24,
             p: 4,
@@ -383,29 +436,123 @@ export default function CallTableRow({
           }}
         >
           <Typography id="content-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
-            {modalContent.type === 'summary' ? 'Call Summary' : 'Call Transcript'}
+            {modalContent.type === 'summary' ? 'Call Summary' : 
+             modalContent.type === 'transcript' ? 'Call Transcript' : 'Cost Breakdown'}
           </Typography>
-          <Typography id="content-modal-description" sx={{ whiteSpace: 'pre-wrap' }}
-          style={modalConfirmOpen.type === "transcript" ? {
-            lineHeight:"50px !important",
-          }:{ }}
-          >
-            {modalContent.content}
-          </Typography>
-          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-            <Button 
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(modalContent.content);
-                  enqueueSnackbar('Content copied to clipboard!', { variant: 'success' });
-                } catch (error) {
-                  enqueueSnackbar('Failed to copy content', { variant: 'error' });
-                }
-              }}
-              startIcon={<Iconify icon="eva:copy-outline" />}
+
+          {modalContent.type !== 'costBreakdown' ? (
+            <Typography 
+              id="content-modal-description" 
+              sx={{ whiteSpace: 'pre-wrap' }}
+              style={modalContent.type === "transcript" ? {
+                lineHeight:"50px !important",
+              } : {}}
             >
-              Copy
-            </Button>
+              {modalContent.content}
+            </Typography>
+          ) : (
+            typeof modalContent.content === 'string' ? (
+              <Typography>{modalContent.content}</Typography>
+            ) : (
+              <>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <Paper sx={{ p: 2 }}>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Total Cost: ${formatCost(modalContent.content?.total)}
+                      </Typography>
+                      
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                          <Typography variant="body2">Speech-to-Text: ${formatCost(modalContent.content?.stt)}</Typography>
+                          <Typography variant="body2">Large Language Model: ${formatCost(modalContent.content?.llm)}</Typography>
+                          <Typography variant="body2">Text-to-Speech: ${formatCost(modalContent.content?.tts)}</Typography>
+                          <Typography variant="body2">Voice API: ${formatCost(modalContent.content?.vapi)}</Typography>
+                        </Box>
+                        
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                          <Typography variant="body2">LLM Prompt Tokens: {modalContent.content?.llmPromptTokens}</Typography>
+                          <Typography variant="body2">LLM Completion Tokens: {modalContent.content?.llmCompletionTokens}</Typography>
+                          <Typography variant="body2">TTS Characters: {modalContent.content?.ttsCharacters}</Typography>
+                        </Box>
+                      </Box>
+                    </Paper>
+                  </Grid>
+                  
+                  <Grid item xs={12} md={12}>
+                    <Paper sx={{ p: 2, height: 300 }}>
+                      <Typography variant="subtitle1" align="center" gutterBottom>
+                        Main Cost Components
+                      </Typography>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={prepareCostBreakdownData(modalContent.content)}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                          >
+                            {prepareCostBreakdownData(modalContent.content).map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip formatter={(value) => `$${formatCost(value)}`} />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </Paper>
+                  </Grid>
+               
+                  <Grid item xs={12}>
+                    <Paper sx={{ p: 2 }}>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Analysis Cost Details
+                      </Typography>
+                      {modalContent.content?.analysisCostBreakdown ? (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            <Typography variant="body2">Summary: ${formatCost(modalContent.content.analysisCostBreakdown.summary)}</Typography>
+                            <Typography variant="body2">Structured Data: ${formatCost(modalContent.content.analysisCostBreakdown.structuredData)}</Typography>
+                            <Typography variant="body2">Success Evaluation: ${formatCost(modalContent.content.analysisCostBreakdown.successEvaluation)}</Typography>
+                          </Box>
+                          
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            <Typography variant="body2">Summary Prompt Tokens: {modalContent.content.analysisCostBreakdown.summaryPromptTokens}</Typography>
+                            <Typography variant="body2">Summary Completion Tokens: {modalContent.content.analysisCostBreakdown.summaryCompletionTokens}</Typography>
+                            <Typography variant="body2">Success Evaluation Prompt Tokens: {modalContent.content.analysisCostBreakdown.successEvaluationPromptTokens}</Typography>
+                            <Typography variant="body2">Success Evaluation Completion Tokens: {modalContent.content.analysisCostBreakdown.successEvaluationCompletionTokens}</Typography>
+                          </Box>
+                        </Box>
+                      ) : (
+                        <Typography>No analysis cost breakdown available</Typography>
+                      )}
+                    </Paper>
+                  </Grid>
+                </Grid>
+              </>
+            )
+          )}
+
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            {modalContent.type !== 'costBreakdown' && (
+              <Button 
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(modalContent.content);
+                    enqueueSnackbar('Content copied to clipboard!', { variant: 'success' });
+                  } catch (error) {
+                    enqueueSnackbar('Failed to copy content', { variant: 'error' });
+                  }
+                }}
+                startIcon={<Iconify icon="eva:copy-outline" />}
+              >
+                Copy
+              </Button>
+            )}
             <Button onClick={() => setContentModalOpen(false)}>Close</Button>
           </Box>
         </Box>
@@ -430,6 +577,32 @@ CallTableRow.propTypes = {
     cost: PropTypes.number,
     endedReason: PropTypes.string,
     assistantId: PropTypes.string,
+    artifact: PropTypes.shape({
+      transcript: PropTypes.string,
+    }),
+    costBreakdown: PropTypes.shape({
+      stt: PropTypes.number,
+      llm: PropTypes.number,
+      tts: PropTypes.number,
+      vapi: PropTypes.number,
+      total: PropTypes.number,
+      llmPromptTokens: PropTypes.number,
+      llmCompletionTokens: PropTypes.number,
+      ttsCharacters: PropTypes.number,
+      analysisCostBreakdown: PropTypes.shape({
+        summary: PropTypes.number,
+        structuredData: PropTypes.number,
+        successEvaluation: PropTypes.number,
+        summaryPromptTokens: PropTypes.number,
+        summaryCompletionTokens: PropTypes.number,
+        structuredDataPromptTokens: PropTypes.number,
+        structuredDataCompletionTokens: PropTypes.number,
+        successEvaluationPromptTokens: PropTypes.number,
+        successEvaluationCompletionTokens: PropTypes.number,
+      }),
+      voicemailDetectionCost: PropTypes.number,
+    }),
   }),
   selected: PropTypes.bool,
+  assistants: PropTypes.array,
 };
