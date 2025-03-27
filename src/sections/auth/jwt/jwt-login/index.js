@@ -137,44 +137,7 @@ export default function JwtLoginView() {
   };
 
   return (
-    <>
-      <Box 
-        sx={{ 
-          width: '100%', 
-          textAlign: 'center', 
-          mb: 2,
-          mt: -15,
-          animation: 'fadeIn 0.8s ease-out',
-          '@keyframes fadeIn': {
-            '0%': { opacity: 0, transform: 'translateY(-20px)' },
-            '100%': { opacity: 1, transform: 'translateY(0)' }
-          }
-        }}
-      >
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 700,
-            color: 'primary.main',
-            textShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            mb: 1,
-            fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' }
-          }}
-        >
-          Unlock Your Agents' Performance
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            color: 'text.secondary',
-            maxWidth: '600px',
-            mx: 'auto',
-            px: 2
-          }}
-        >
-          Monitor, analyze, and optimize your AI agents with real-time insights
-        </Typography>
-      </Box>
+
       <StyledBox>
         <StyledStack>
           <StyledLogoContainer>
@@ -202,7 +165,7 @@ export default function JwtLoginView() {
                 mb: 3 
               }}
             >
-              Welcome back! Enter your credentials to continue
+              Log in and monitor how your agents are performing
             </Typography>
 
             <Box 
@@ -257,7 +220,6 @@ export default function JwtLoginView() {
           </FormProvider>
         </StyledStack>
       </StyledBox>
-    </>
   );
 
   function handleLoginSubmit() {
