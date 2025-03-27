@@ -63,7 +63,7 @@ export function useNavData() {
     // MANAGEMENT
     // ----------------------------------------------------------------------
     {
-      subheader: 'MANAGEMENT',
+      subheader: 'Your agency',
       items: [
         {
           title: 'User/Agency',
@@ -86,7 +86,7 @@ export function useNavData() {
           path: "/phone-numbers",
           icon: ICONS.user,
         },
-      /*   { title: 'My Clients', path: paths.profile.clients,disabled:true, icon: ICONS.clients }, */
+        { title: 'My Clients', path: "/clients",disabled:true, icon: ICONS.clients }, 
       /*   {
           title: 'Usage',
           path: "/usage",

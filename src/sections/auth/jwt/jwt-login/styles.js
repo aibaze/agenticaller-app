@@ -15,8 +15,9 @@ const fadeIn = keyframes`
 export const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  minHeight: '100vh',
+  minHeight: '70vh',
   width: '100%',
+  marginTop: '-50px',
   padding: theme.spacing(3),
   alignItems: 'center', 
   justifyContent: 'center',

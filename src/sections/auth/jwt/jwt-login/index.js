@@ -137,97 +137,127 @@ export default function JwtLoginView() {
   };
 
   return (
-    <StyledBox>
-      <StyledStack>
-        <StyledLogoContainer>
-          <Logo />
-        </StyledLogoContainer>
-        <Stack spacing={2} sx={{ mb: 5 }}>
-          <Typography 
-            variant="h4" 
-            sx={{ 
-              fontWeight: 700, 
-              color: 'primary.main',
-              textAlign: 'center',
-              mb: 1,
-              textShadow: '0 1px 2px rgba(0,0,0,0.1)',
-              letterSpacing: '0.5px'
-            }}
-          >
-            Sign in to Agenticaller
-          </Typography>
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              textAlign: 'center', 
-              color: 'text.secondary', 
-              mb: 3 
-            }}
-          >
-            Welcome back! Enter your credentials to continue
-          </Typography>
+    <>
+      <Box 
+        sx={{ 
+          width: '100%', 
+          textAlign: 'center', 
+          mb: 2,
+          mt: -15,
+          animation: 'fadeIn 0.8s ease-out',
+          '@keyframes fadeIn': {
+            '0%': { opacity: 0, transform: 'translateY(-20px)' },
+            '100%': { opacity: 1, transform: 'translateY(0)' }
+          }
+        }}
+      >
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 700,
+            color: 'primary.main',
+            textShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            mb: 1,
+            fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' }
+          }}
+        >
+          Unlock Your Agents' Performance
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            color: 'text.secondary',
+            maxWidth: '600px',
+            mx: 'auto',
+            px: 2
+          }}
+        >
+          Monitor, analyze, and optimize your AI agents with real-time insights
+        </Typography>
+      </Box>
+      <StyledBox>
+        <StyledStack>
+          <StyledLogoContainer>
+            <Logo />
+          </StyledLogoContainer>
+          <Stack spacing={2} sx={{ mb: 5 }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 700, 
+                color: 'primary.main',
+                textAlign: 'center',
+                mb: 1,
+                textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                letterSpacing: '0.5px'
+              }}
+            >
+              Sign in to Agenticaller
+            </Typography>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                textAlign: 'center', 
+                color: 'text.secondary', 
+                mb: 3 
+              }}
+            >
+              Welcome back! Enter your credentials to continue
+            </Typography>
 
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              mb: 2, 
-              '& button': { 
-                borderRadius: 2,
-                boxShadow: (theme) => `0 8px 16px ${alpha(theme.palette.primary.main, 0.24)}`,
-                transition: 'transform 0.2s ease',
-                '&:hover': {
-                  transform: 'translateY(-3px)',
-                  boxShadow: (theme) => `0 12px 20px ${alpha(theme.palette.primary.main, 0.28)}`,
-                }
-              } 
-            }}
-          >
-            <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-              <GoogleLogin
-                width={isMobile ? '250px' : '350px'}
-                onSuccess={onGoogleSuccess}
-                onError={onGoogleFailure}
-                theme="outline"
-                size="large"
-                shape="rectangular"
-                text="signin_with"
-              />
-            </GoogleOAuthProvider>
-          </Box>
-
-          <Divider sx={{ 
-            my: 3, 
-            position: 'relative',
-            '&::before, &::after': {
-              borderTopColor: (theme) => alpha(theme.palette.primary.main, 0.2),
-            }
-          }}>
-         
-          </Divider>
-        </Stack>
-
-        <FormProvider methods={methods} onSubmit={onSubmit}>
-          <Stack spacing={2.5}>
-            {!!errorMsg && (
-              <Alert 
-                severity="error" 
-                sx={{ 
-                  animation: 'pulse 1.5s infinite',
-                  '@keyframes pulse': {
-                    '0%, 100%': { boxShadow: '0 0 0 rgba(211, 47, 47, 0)' },
-                    '50%': { boxShadow: '0 0 10px rgba(211, 47, 47, 0.3)' }
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                mb: 2, 
+                '& button': { 
+                  borderRadius: 2,
+                  boxShadow: (theme) => `0 8px 16px ${alpha(theme.palette.primary.main, 0.24)}`,
+                  transition: 'transform 0.2s ease',
+                  '&:hover': {
+                    transform: 'translateY(-3px)',
+                    boxShadow: (theme) => `0 12px 20px ${alpha(theme.palette.primary.main, 0.28)}`,
                   }
-                }}
-              >
-                {errorMsg}
-              </Alert>
-            )}
-         
+                } 
+              }}
+            >
+              <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+                <GoogleLogin
+                  width={isMobile ? '250px' : '350px'}
+                  onSuccess={onGoogleSuccess}
+                  onError={onGoogleFailure}
+                  theme="outline"
+                  size="large"
+                  shape="rectangular"
+                  text="signin_with"
+                />
+              </GoogleOAuthProvider>
+            </Box>
+
           </Stack>
-        </FormProvider>
-      </StyledStack>
-    </StyledBox>
+
+          <FormProvider methods={methods} onSubmit={onSubmit}>
+            <Stack spacing={2.5}>
+              {!!errorMsg && (
+                <Alert 
+                  severity="error" 
+                  sx={{ 
+                    animation: 'pulse 1.5s infinite',
+                    '@keyframes pulse': {
+                      '0%, 100%': { boxShadow: '0 0 0 rgba(211, 47, 47, 0)' },
+                      '50%': { boxShadow: '0 0 10px rgba(211, 47, 47, 0.3)' }
+                    }
+                  }}
+                >
+                  {errorMsg}
+                </Alert>
+              )}
+           
+            </Stack>
+          </FormProvider>
+        </StyledStack>
+      </StyledBox>
+    </>
   );
 
   function handleLoginSubmit() {
