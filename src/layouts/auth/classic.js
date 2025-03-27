@@ -38,28 +38,32 @@ export default function AuthClassicLayout({ children, image, verifyEmail, title 
         {!verifyEmail && mdUp && (
           <Stack
             flexGrow={1}
-            spacing={10}
-            alignItems="center"
-            justifyContent="center"
             sx={{
+              position: 'relative',
+              height: '100vh',
+              width: '50%',
+              overflow: 'hidden'
+            }}
+          >
+            <Image
+              src="https://i.ibb.co/76zVSQD/112595.jpg"
+              alt="Login Illustration"
+              layout="fill"
+              objectFit="cover"
+              priority
+            />
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
               background: `linear-gradient(to bottom, ${alpha(
                 theme.palette.background.default,
                 theme.palette.mode === 'light' ? 0.88 : 0.94
-              )}), url('/assets/background/overlay_2.jpg')`,
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat',
-            }}
-          >
-            <ImageContainer>
-              <Image
-                src={
-                  "https://i.ibb.co/Pz9MmtrC/Screenshot-2025-03-27-at-4-28-43-PM.png"
-                }
-                alt="Login Illustration"
-                layout="fill"
-                objectFit="contain"
-              />
-            </ImageContainer>
+              )})`,
+              zIndex: 1
+            }} />
           </Stack>
         )}
       </Stack>
