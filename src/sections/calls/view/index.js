@@ -133,7 +133,7 @@ export default function ProductListView() {
       console.log("hay id")
       getCalls();
     }
-  }, [currentCoach?._id, searchTerm, getCalls]);
+  }, [ currentCoach._id]);
 
   const denseHeight = table.dense ? 60 : 80;
 
