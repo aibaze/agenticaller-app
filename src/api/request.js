@@ -28,25 +28,19 @@ export function useGetLabels(coachId) {
 
 export function useGetRequests(coachId ,type , searchTerm) {
 
-  const URL = searchTerm && searchTerm.length > 0 ? `/request/coach/${coachId}?search=${searchTerm}` : `/request/coach/${coachId}?type=${type}`;
 
-  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(() => {
-    if (!data?.requests) return { byId: {}, allIds: [] };
-
-    const byId = keyBy(data.requests, '_id');
-    const allIds = Object.keys(byId);
-
+ 
     return {
-      requests: { byId, allIds },
-      requestsLoading: isLoading,
-      mailsError: error,
-      mailsValidating: isValidating,
-      mailsEmpty: !isLoading && allIds.length === 0,
+      requests: { byId: [], allIds: [] },
+      requestsLoading: null,
+      mailsError: null,
+      mailsValidating: false,
+      mailsEmpty: true,
       refetch: mutate,
     };
-  }, [data?.requests, error, isLoading, isValidating, mutate, searchTerm]);
+  }, []);
 
   return memoizedValue;
 }
