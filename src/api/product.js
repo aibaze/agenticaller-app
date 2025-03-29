@@ -9,7 +9,7 @@ export function useGetProducts() {
 
 
   return {
-    products: | [],
+    products:  [],
     productsLoading: null,
     productsError: null,
     productsValidating: false,
