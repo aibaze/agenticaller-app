@@ -48,11 +48,7 @@ const ICONS = {
 // ----------------------------------------------------------------------
 
 export function useNavData() {
-  const { currentCoach } = useAuthContext();
-  const { requests } = useGetRequests(currentCoach?._id, 'service');
-  const newRequests = Object.values(requests?.byId || {}).filter(
-    (element) => element.state !== 'ANSWERED'
-  ).length;
+
   const data = useMemo(() => [
     // OVERVIEW
     // ----------------------------------------------------------------------

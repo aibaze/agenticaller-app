@@ -6,22 +6,14 @@ import { standardfetcher as fetcher, endpoints } from 'src/utils/axios';
 // ----------------------------------------------------------------------
 
 export function useGetProducts() {
-  const URL = endpoints.product.list;
 
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
-  const memoizedValue = useMemo(
-    () => ({
-      products: data?.products || [],
-      productsLoading: isLoading,
-      productsError: error,
-      productsValidating: isValidating,
-      productsEmpty: !isLoading && !data?.products.length,
-    }),
-    [data?.products, error, isLoading, isValidating]
-  );
-
-  return memoizedValue;
+  return {
+    products: | [],
+    productsLoading: null,
+    productsError: null,
+    productsValidating: false,
+   };
 }
 
 // ----------------------------------------------------------------------
