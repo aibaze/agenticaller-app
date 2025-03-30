@@ -11,7 +11,7 @@ export const metadata = {
   title: 'Dashboard: Post Edit',
 };
 
-export default function PostEditPage({ params }) {
+export default function EditPage({ params }) {
   const { title } = params;
 
   return <PostEditView title={title} />;
