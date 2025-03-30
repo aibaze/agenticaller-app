@@ -22,7 +22,7 @@ export async function generateStaticParams() {
 
   return res.data.posts.map((post) => ({
     title: paramCase(post.title),
-  }));
+  })) || []
 }
 
 PostDetailsPage.propTypes = {
