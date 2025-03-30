@@ -127,10 +127,9 @@ export default function ProductListView() {
   // Call getCalls initially when currentCoach or searchTerm changes
   
   useEffect(() => {
-    console.log("useeefect",currentCoach?._id)
 
     if (currentCoach?._id) {
-      console.log("hay id")
+      console.log("currentCoach?._id",currentCoach?._id)
       getCalls();
     }
   }, [ currentCoach._id]);

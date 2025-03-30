@@ -18,14 +18,22 @@ export default function PostEditPage({ params }) {
 }
 
 export async function generateStaticParams() {
-  const res = await axios.get(endpoints.post.list);
-
-  return res.data.posts.map((post) => ({
-    title: paramCase(post.title),
-  }));
+  try {
+    const res = await axios.get(endpoints.post.list);
+    if (!res.data?.posts) {
+      console.error('No posts found in API response:', res.data);
+      return []; // Fallback to empty array
+    }
+    return res.data.posts.map((post) => ({
+      title: paramCase(post.title),
+    }));
+  } catch (error) {
+    console.error('Error in generateStaticParams:', error);
+    return []; // Fallback to avoid build failure
+  }
 }
 
-PostEditPage.propTypes = {
+EditPage.propTypes = {
   params: PropTypes.shape({
     title: PropTypes.string,
   }),
