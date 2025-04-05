@@ -118,10 +118,7 @@ export default function CallTableRow({
     recordingUrl,
     summary,
     cost,
-    endedReason,
     assistantId,
-    artifact,
-    costBreakdown,
   } = row;
   const duration = endedAt && startedAt
     ? new Date(endedAt).getTime() - new Date(startedAt).getTime()
@@ -160,10 +157,7 @@ export default function CallTableRow({
     if (!futureEvents.length) return { valid: false, result: 'No future appointments' };
 
     const nextEvent = futureEvents[0];
-    const result =
-      section === 'date'
-        ? format(new Date(nextEvent.start), 'dd MMM')
-        : format(new Date(nextEvent.start), 'p');
+    const result =new Date()
 
     return { result, valid: true, nextEvent: nextEvent.hangoutLink };
   };
@@ -248,7 +242,7 @@ export default function CallTableRow({
 
         <TableCell>
           <Typography variant="body2">
-            {format(new Date(startedAt), 'dd MMM  HH:mm:ss')}
+            {startedAt ? format(new Date(startedAt), 'dd MMM  HH:mm:ss') : 'N/A'}
           </Typography>
         </TableCell>
 
